@@ -211,9 +211,12 @@ class Trainer:
         plot_title: str = None,
         model_filename: str = "model",
         plot_filename: str = "val_plot",
+        val_set: pd.DataFrame = None,
+        val_filename: str = "val",
         test_set: pd.DataFrame = None,
         test_filename: str = "test",
     ):
+        # temp directory to save artifacts
         parent_dir = Path(".").resolve() / f"{utils.unique_id()}"
         ml.save_estimator(
             estimator=estimator, parent_dir=parent_dir, filename=model_filename
@@ -225,13 +228,15 @@ class Trainer:
             parent_dir=parent_dir,
             filename=plot_filename,
         )
+        if val_set is not None and len(val_set) > 0:
+            val_set.to_csv(parent_dir / f"{val_filename}.csv", index=True)
         if test_set is not None and len(test_set) > 0:
             test_set.to_csv(parent_dir / f"{test_filename}.csv", index=True)
         with mlflow.start_run(
             run_id=run_id, experiment_id=experiment_id, nested=True
         ):
             mlflow.log_artifacts(parent_dir)
-
+        # remove temp directory
         shutil.rmtree(parent_dir)
 
     def run(self, save_artifacts: bool = True):
@@ -269,6 +274,10 @@ class Trainer:
                         settings=ml_params,
                     )
                     y_pred = estimator.predict(X_val)
+                    val_set = X_val.copy()
+                    val_set["actual"] = y_val.values
+                    val_set["prediction"] = y_pred
+                    val_set["forecast_period"] = data_params["forecast_period"]
                     if len(X_test) > 0:
                         test_set = X_test.copy()
                         test_set["prediction"] = estimator.predict(X_test)
@@ -304,5 +313,6 @@ class Trainer:
                                 y_true=y_val,
                                 y_pred=y_pred,
                                 plot_title=self.ticker,
+                                val_set=val_set,
                                 test_set=test_set,
                             )
