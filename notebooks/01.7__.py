@@ -21,7 +21,7 @@ print(praice.__version__)
 # -
 
 trainer = Trainer(
-    ticker="MSFT",
+    ticker="TWTR",
     learners_cnf="default_ml_config",
     datasets_cnf="default_instrument_config",
 )
@@ -29,5 +29,5 @@ trainer = Trainer(
 # +
 # %%time
 
-trainer.run()
+trainer.run(save_artifacts=True)
 # -

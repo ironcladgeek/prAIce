@@ -1,8 +1,8 @@
 import datetime
 import os
+import uuid
 from pathlib import PosixPath
 from typing import List, Union
-import uuid
 
 import yaml
 
