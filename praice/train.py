@@ -80,7 +80,10 @@ class Trainer:
             period=data_params["period"],
             add_ta_indicators=data_params["add_ta_indicators"],
             ta_indicators_config_fn=data_params["ta_indicators_config_fn"],
+            add_date_features=data_params["add_date_features"],
             lookback_period=data_params["lookback_period"],
+            add_past_close_prices=data_params["add_past_close_prices"],
+            add_past_pct_changes=data_params["add_past_pct_changes"],
             forecast_period=data_params["forecast_period"],
         ).get_data(
             train_size=data_params["train_size"],
