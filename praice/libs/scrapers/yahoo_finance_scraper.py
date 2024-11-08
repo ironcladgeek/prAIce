@@ -31,7 +31,7 @@ class YahooFinanceScraper(NewsScraper):
         for news_item in soup.find_all(
             "li", class_="stream-item story-item yf-1usaaz9"
         ):
-            headline_tag = news_item.find("h3", class_="clamp yf-1sxfjua")
+            headline_tag = news_item.find("h3", class_="clamp yf-fy4jvv")
             if headline_tag:
                 headline = headline_tag.text.strip()
                 link_tag = news_item.find("a", href=True)
