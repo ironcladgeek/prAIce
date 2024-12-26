@@ -31,7 +31,7 @@ class YahooFinanceScraper(NewsScraper):
         for news_item in soup.find_all(
             "li", class_="stream-item story-item yf-1usaaz9"
         ):
-            headline_tag = news_item.find("h3", class_="clamp yf-fy4jvv")
+            headline_tag = news_item.find("h3", class_="clamp yf-18q3fnf")
             if headline_tag:
                 headline = headline_tag.text.strip()
                 link_tag = news_item.find("a", href=True)
@@ -60,7 +60,7 @@ class YahooFinanceScraper(NewsScraper):
         soup = self.get_soup(url)
 
         content = ""
-        content_div = soup.find("div", class_="caas-body")
+        content_div = soup.find("div", class_="body")
         if content_div:
             content = content_div.get_text(separator="\n", strip=True)
 
@@ -73,11 +73,11 @@ class YahooFinanceScraper(NewsScraper):
 
         # Extract symbols mentioned in the article
         symbols = set()
-        symbol_divs = soup.find_all("div", class_="caas-xray-entity")
-        for div in symbol_divs:
-            fin_ticker = div.find("fin-ticker")
-            if fin_ticker and "symbol" in fin_ticker.attrs:
-                symbol = fin_ticker["symbol"]
+        ticker_containers = soup.find_all("a", class_="ticker")
+        for container in ticker_containers:
+            symbol_span = container.find("span", class_="symbol")
+            if symbol_span:
+                symbol = symbol_span.text.strip()
                 symbols.add(symbol)
 
         return {"content": content, "published_at": timestamp, "symbols": list(symbols)}
