@@ -1,10 +1,10 @@
-from abc import ABC, abstractmethod
 import time
+from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 
-from loguru import logger
 import requests
 from bs4 import BeautifulSoup
+from loguru import logger
 
 
 class NewsScraper(ABC):
@@ -74,13 +74,16 @@ class NewsScraper(ABC):
 
         pass
 
-    def get_soup(self, url: str, max_retries: int = 3) -> BeautifulSoup:
+    def get_soup(
+        self, url: str, max_retries: int = 3, timeout: int = 30
+    ) -> BeautifulSoup:
         """
         Retrieves the BeautifulSoup object by making a GET request to the specified URL.
 
         Args:
             url (str): The URL to make the GET request to.
             max_retries (int, optional): The maximum number of retries in case of request failure. Defaults to 3.
+            timeout (int, optional): The timeout for the request in seconds. Defaults to 30.
 
         Returns:
             BeautifulSoup: The BeautifulSoup object representing the parsed HTML content.
@@ -91,7 +94,9 @@ class NewsScraper(ABC):
 
         for i in range(max_retries):
             try:
-                response = requests.get(url, headers=self.headers, proxies=self.proxy)
+                response = requests.get(
+                    url, headers=self.headers, proxies=self.proxy, timeout=timeout
+                )
                 response.raise_for_status()
                 return BeautifulSoup(response.content, "html.parser")
             except (requests.RequestException, requests.HTTPError) as e:

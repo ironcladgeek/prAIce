@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
-from praice.data_handling.scrapers.base_scraper import NewsScraper
-from praice.data_handling.scrapers.yahoo_finance_scraper import YahooFinanceScraper
+from praice.libs.scrapers.base_scraper import NewsScraper
+from praice.libs.scrapers.yahoo_finance_scraper import YahooFinanceScraper
 
 
 class ScraperFactory:

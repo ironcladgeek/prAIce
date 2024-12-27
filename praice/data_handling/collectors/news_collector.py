@@ -16,7 +16,7 @@ from praice.data_handling.db_ops.scraping_url_helpers import (
 )
 from praice.data_handling.db_ops.symbol_helpers import get_or_create_symbol
 from praice.data_handling.models import db
-from praice.data_handling.scrapers.scraper_factory import ScraperFactory
+from praice.libs.scrapers.scraper_factory import ScraperFactory
 
 
 def collect_news_headlines(
