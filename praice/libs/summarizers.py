@@ -181,6 +181,6 @@ class SummarizerFactory:
                     )
                 case _:
                     raise ValueError(
-                        "Invalid API type. Choose 'anthropic' or 'openai'."
+                        "Invalid API type. Choose 'bart', 'anthropic', or 'openai'."
                     )
         return cls._summarizers[api_type]
