@@ -82,17 +82,21 @@ def search_news(
     return search_query if lazy else list(search_query)
 
 
-def get_news_with_null_content(limit: int = 50) -> List[News]:
+def get_news_with_null_content(limit: int = 50, randomize: bool = True) -> List[News]:
     """
     Retrieve a list of news articles with null content.
 
     Args:
         limit (int, optional): The maximum number of news articles to retrieve. Defaults to 50.
+        randomize (bool, optional): Whether to randomize the order of the news articles. Defaults to True.
 
     Returns:
         List[News]: A list of news articles with null content.
     """
-    return list(News.select().where(News.content.is_null()).limit(limit))
+    query = News.select().where(News.content.is_null())
+    if randomize:
+        query = query.order_by(fn.Random())
+    return list(query.limit(limit))
 
 
 def count_news_with_null_content() -> int:
