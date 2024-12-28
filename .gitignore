@@ -137,3 +137,4 @@ catboost*/
 AutoML*/
 mlruns/
 data/
+.trunk/

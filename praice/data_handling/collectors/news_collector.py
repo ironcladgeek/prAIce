@@ -66,18 +66,20 @@ def collect_news_headlines(
 
 
 def collect_news_articles(
-    proxy: Optional[Dict[str, str]] = None, limit: int = 50
+    proxy: Optional[Dict[str, str]] = None, limit: int = 50, randomize: bool = True
 ) -> None:
     """
     Collects news articles with null content and scrapes their full content.
 
     Args:
         proxy (Optional[Dict[str, str]]): A dictionary containing proxy information. Defaults to None.
+        limit (int): The maximum number of news articles to scrape. Defaults to 50.
+        randomize (bool): Whether to randomize the order of the news articles. Defaults to True.
 
     Returns:
         None
     """
-    news_to_scrape = get_news_with_null_content(limit=limit)
+    news_to_scrape = get_news_with_null_content(limit=limit, randomize=randomize)
     num_scraped = 0
 
     logger.info(

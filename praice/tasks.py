@@ -41,7 +41,7 @@ def collect_articles_job():
     logger.info("Starting article collection job")
     try:
         # Collects news articles with null content and scrapes their full content
-        news_collector.collect_news_articles(limit=100)
+        news_collector.collect_news_articles(limit=150, randomize=True)
         logger.info("Article collection job completed successfully")
     except Exception as e:
         logger.error(f"Error in article collection job: {str(e)}")
