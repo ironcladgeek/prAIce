@@ -16,12 +16,12 @@ app.conf.timezone = "UTC"
 app.conf.beat_schedule = {
     "collect-yfinance-headlines": {
         "task": "praice.tasks.collect_headlines_by_source_job",
-        "schedule": crontab(minute="*/80"),
+        "schedule": crontab(minute="*/65"),
         "args": ("yfinance",),
     },
     "collect-articles": {
         "task": "praice.tasks.collect_articles_job",
-        "schedule": crontab(minute="*/170"),
+        "schedule": crontab(minute="*/101"),
     },
     "collect-price-data": {
         "task": "praice.tasks.collect_price_data_job",
