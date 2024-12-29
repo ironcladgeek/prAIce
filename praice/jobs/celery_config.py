@@ -1,7 +1,7 @@
 from celery import Celery
 from celery.schedules import crontab
 
-import praice.tasks  # noqa
+import praice.jobs.tasks  # noqa
 from praice.core.config import settings
 
 app = Celery()

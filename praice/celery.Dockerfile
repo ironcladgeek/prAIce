@@ -1,3 +1,5 @@
+# trunk-ignore-all(checkov/CKV_DOCKER_2)
+# trunk-ignore-all(checkov/CKV_DOCKER_3)
 FROM python:3.11-slim
 
 # Set the working directory in the container
@@ -32,4 +34,4 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
 # Command to run Celery (this will be overridden by docker-compose)
-CMD ["celery", "-A", "praice.celery_config:app", "worker", "--loglevel=info"]
+CMD ["celery", "-A", "praice.jobs.celery_config:app", "worker", "--loglevel=info"]

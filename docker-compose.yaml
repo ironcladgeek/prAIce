@@ -33,8 +33,8 @@ services:
       - ./logs:/app/logs
     command: >
       sh -c "
-        celery -A praice.celery_config:app worker --loglevel=info &
-        celery -A praice.celery_config:app beat --loglevel=info &
+        celery -A praice.jobs.celery_config:app worker --loglevel=info &
+        celery -A praice.jobs.celery_config:app beat --loglevel=info &
         wait
       "
     depends_on:
