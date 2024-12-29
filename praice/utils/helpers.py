@@ -5,7 +5,7 @@ from functools import wraps
 import requests
 from loguru import logger
 
-from praice.config import settings
+from praice.core.config import settings
 
 
 def chunked(iterable, chunk_size):

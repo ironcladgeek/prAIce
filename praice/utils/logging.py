@@ -2,8 +2,8 @@ import sys
 
 from loguru import logger
 
-from praice.config import settings
-from praice.constants import PATHS
+from praice.core.config import settings
+from praice.core.constants import PATHS
 
 
 def setup_logging():

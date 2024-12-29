@@ -3,7 +3,7 @@ from functools import lru_cache
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from praice.constants import PATHS
+from praice.core.constants import PATHS
 
 
 class Settings(BaseSettings):

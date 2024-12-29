@@ -2,7 +2,7 @@ from celery import Celery
 from celery.schedules import crontab
 
 import praice.tasks  # noqa
-from praice.config import settings
+from praice.core.config import settings
 
 app = Celery()
 

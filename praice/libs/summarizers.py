@@ -6,7 +6,7 @@ import requests
 from anthropic import Anthropic
 from openai import OpenAI
 
-from praice.config import settings
+from praice.core.config import settings
 
 
 class Summarizer(ABC):
