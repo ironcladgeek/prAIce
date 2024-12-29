@@ -89,14 +89,14 @@ def delete_technical_analysis_by_symbol(
     """
     try:
         symbol_obj = crud._ensure_symbol(symbol)
-    except Symbol.DoesNotExist:
-        raise ValueError(f"Symbol '{symbol}' does not exist.")
+    except Symbol.DoesNotExist as e:
+        raise ValueError(f"Symbol '{symbol}' does not exist.") from e
 
     if isinstance(timeframe, str):
         try:
             timeframe = Timeframe(timeframe)
-        except ValueError:
-            raise ValueError(f"Invalid timeframe: {timeframe}")
+        except ValueError as e:
+            raise ValueError(f"Invalid timeframe: {timeframe}") from e
 
     query = TechnicalAnalysis.delete().where(
         (TechnicalAnalysis.symbol == symbol_obj)
