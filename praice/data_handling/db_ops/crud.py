@@ -477,8 +477,8 @@ def get_historical_prices(
     """
     try:
         symbol_obj = _ensure_symbol(symbol)
-    except DoesNotExist:
-        raise ValueError(f"Symbol '{symbol}' does not exist.")
+    except DoesNotExist as e:
+        raise ValueError(f"Symbol '{symbol}' does not exist.") from e
 
     query = HistoricalPrice1D.select().where(HistoricalPrice1D.symbol == symbol_obj)
 
@@ -603,14 +603,14 @@ def create_technical_analysis(
     """
     try:
         symbol_obj = _ensure_symbol(symbol)
-    except DoesNotExist:
-        raise ValueError(f"Symbol '{symbol}' does not exist.")
+    except DoesNotExist as e:
+        raise ValueError(f"Symbol '{symbol}' does not exist.") from e
 
     if isinstance(timeframe, str):
         try:
             timeframe = Timeframe(timeframe)
-        except ValueError:
-            raise ValueError(f"Invalid timeframe: {timeframe}")
+        except ValueError as e:
+            raise ValueError(f"Invalid timeframe: {timeframe}") from e
 
     with db.atomic():
         return TechnicalAnalysis.create(
@@ -648,14 +648,14 @@ def update_technical_analysis(
     """
     try:
         symbol_obj = _ensure_symbol(symbol)
-    except DoesNotExist:
-        raise ValueError(f"Symbol '{symbol}' does not exist.")
+    except DoesNotExist as e:
+        raise ValueError(f"Symbol '{symbol}' does not exist.") from e
 
     if isinstance(timeframe, str):
         try:
             timeframe = Timeframe(timeframe)
-        except ValueError:
-            raise ValueError(f"Invalid timeframe: {timeframe}")
+        except ValueError as e:
+            raise ValueError(f"Invalid timeframe: {timeframe}") from e
 
     with db.atomic():
         analysis = TechnicalAnalysis.get(
@@ -694,14 +694,14 @@ def delete_technical_analysis(
     """
     try:
         symbol_obj = _ensure_symbol(symbol)
-    except DoesNotExist:
-        raise ValueError(f"Symbol '{symbol}' does not exist.")
+    except DoesNotExist as e:
+        raise ValueError(f"Symbol '{symbol}' does not exist.") from e
 
     if isinstance(timeframe, str):
         try:
             timeframe = Timeframe(timeframe)
-        except ValueError:
-            raise ValueError(f"Invalid timeframe: {timeframe}")
+        except ValueError as e:
+            raise ValueError(f"Invalid timeframe: {timeframe}") from e
 
     with db.atomic():
         query = TechnicalAnalysis.delete().where(
@@ -744,14 +744,14 @@ def bulk_upsert_technical_analysis(
     """
     try:
         symbol_obj = _ensure_symbol(symbol)
-    except DoesNotExist:
-        raise ValueError(f"Symbol '{symbol}' does not exist.")
+    except DoesNotExist as e:
+        raise ValueError(f"Symbol '{symbol}' does not exist.") from e
 
     if isinstance(timeframe, str):
         try:
             timeframe = Timeframe(timeframe)
-        except ValueError:
-            raise ValueError(f"Invalid timeframe: {timeframe}")
+        except ValueError as e:
+            raise ValueError(f"Invalid timeframe: {timeframe}") from e
 
     upsert_count = 0
 
@@ -759,10 +759,10 @@ def bulk_upsert_technical_analysis(
         for date_str, analysis_data in data.items():
             try:
                 date = datetime.strptime(date_str, "%Y-%m-%d").date()
-            except ValueError:
+            except ValueError as e:
                 raise ValueError(
                     f"Invalid date format: {date_str}. Expected format: YYYY-MM-DD"
-                )
+                ) from e
 
             technical_indicators = analysis_data.get("technical_indicators", {})
             candlestick_patterns = analysis_data.get("candlestick_patterns", {})
