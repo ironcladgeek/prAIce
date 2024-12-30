@@ -7,7 +7,7 @@ services:
     image: praice_inference_api
     container_name: praice_inference_api_cnt
     ports:
-      - "8001:8001"
+      - 8001:8001
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/huggingface/hub
 
@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     container_name: redis_cnt
     ports:
-      - "6379:6379"
+      - 6379:6379
 
 
   celery:
@@ -33,8 +33,8 @@ services:
       - ./logs:/app/logs
     command: >
       sh -c "
-        celery -A praice.celery_config:app worker --loglevel=info &
-        celery -A praice.celery_config:app beat --loglevel=info &
+        celery -A praice.jobs.celery_config:app worker --loglevel=info &
+        celery -A praice.jobs.celery_config:app beat --loglevel=info &
         wait
       "
     depends_on:

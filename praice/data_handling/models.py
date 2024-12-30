@@ -18,7 +18,7 @@ from peewee import (
 )
 from playhouse.postgres_ext import JSONField
 
-from praice.config import settings
+from praice.core.config import settings
 
 db = PostgresqlDatabase(
     database=settings.DB_NAME,
