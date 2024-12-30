@@ -110,9 +110,14 @@ class ReturnsCalculator:
 
     def __init__(self, df: pd.DataFrame, rolling_windows: Optional[list] = None):
         self.df = df.copy()
-        self.rolling_windows = (
-            rolling_windows if rolling_windows else [5, 10, 21, 63, 126, 252]
-        )  # ~1w, 2w, 1m, 3m, 6m, 1y
+        self.rolling_windows = rolling_windows or [
+            5,
+            10,
+            21,
+            63,
+            126,
+            252,
+        ]  # ~1w, 2w, 1m, 3m, 6m, 1y
 
     def calculate_returns(self) -> pd.DataFrame:
         """
@@ -159,7 +164,7 @@ class FuturePricesAdder:
 
     def __init__(self, df: pd.DataFrame, future_periods: Optional[list] = None):
         self.df = df.copy()
-        self.future_periods = future_periods if future_periods else [21, 63]  # ~1m, 3m
+        self.future_periods = future_periods or [21, 63]  # ~1m, 3m
 
     def add_future_prices(self) -> pd.DataFrame:
         """
