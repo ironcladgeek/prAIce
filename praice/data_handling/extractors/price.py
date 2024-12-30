@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 import numpy as np
@@ -240,3 +241,135 @@ def prepare_price_data(
         df = df.dropna()
 
     return df
+
+
+def get_train_and_test_data(
+    symbol: str,
+    train_start: Optional[str] = None,
+    train_end: Optional[str] = None,
+    test_start: Optional[str] = None,
+    test_end: Optional[str] = None,
+    train_size: Optional[float] = None,
+    test_size: Optional[float] = None,
+    split_date: Optional[str] = None,
+    skip_start_pct: Optional[float] = None,
+    skip_end_pct: Optional[float] = None,
+    drop_null_features: bool = True,
+    drop_null_targets: bool = True,
+) -> tuple:
+    """
+    Get train and test data for a given symbol.
+
+    Parameters:
+        symbol (str): The symbol for which to get train and test data.
+        train_start (str, optional): The start date for the training set. Format: 'YYYY-MM-DD'.
+        train_end (str, optional): The end date for the training set. Format: 'YYYY-MM-DD'.
+        test_start (str, optional): The start date for the test set. Format: 'YYYY-MM-DD'.
+        test_end (str, optional): The end date for the test set. Format: 'YYYY-MM-DD'.
+        train_size (float, optional): The proportion of the dataset to include in the train split. Should be between 0.0 and 1.0.
+        test_size (float, optional): The proportion of the dataset to include in the test split. Should be between 0.0 and 1.0.
+        split_date (str, optional): The date to split the data into train and test sets. Format: 'YYYY-MM-DD'.
+        skip_start_pct (float, optional): Percentage of data to skip from the start. Should be between 0.0 and 1.0.
+        skip_end_pct (float, optional): Percentage of data to skip from the end. Should be between 0.0 and 1.0.
+        drop_null_features (bool): If True, drop rows with null values after calculating returns. Default is True.
+        drop_null_targets (bool): If True, drop rows with null values after adding future prices. Default is True.
+
+    Returns:
+        tuple: A tuple containing the train and test DataFrames.
+
+    Raises:
+        ValueError: If invalid combination of parameters is provided or if parameters are out of valid range.
+    """
+    # Validate input parameters
+    if split_date:
+        if any([train_start, train_end, test_start, test_end, train_size, test_size]):
+            raise ValueError(
+                "When split_date is provided, other splitting parameters should not be used."
+            )
+    elif train_start and train_end:
+        if any([train_size, test_size]):
+            raise ValueError(
+                "Cannot use train_size or test_size with train_start/train_end."
+            )
+        if not test_start or not test_end:
+            raise ValueError(
+                "Both test_start and test_end must be provided with train_start/train_end."
+            )
+    elif test_start and test_end:
+        if any([train_size, test_size]):
+            raise ValueError(
+                "Cannot use train_size or test_size with test_start/test_end."
+            )
+        if not train_start or not train_end:
+            raise ValueError(
+                "Both train_start and train_end must be provided with test_start/test_end."
+            )
+    elif train_size or test_size:
+        if train_size and test_size:
+            raise ValueError("Provide either train_size or test_size, not both.")
+        if any([train_start, train_end, test_start, test_end]):
+            raise ValueError(
+                "Cannot use train_start/train_end/test_start/test_end with train_size/test_size."
+            )
+        if train_size and (train_size <= 0 or train_size >= 1):
+            raise ValueError("train_size must be between 0 and 1.")
+        if test_size and (test_size <= 0 or test_size >= 1):
+            raise ValueError("test_size must be between 0 and 1.")
+    else:
+        raise ValueError(
+            "Must provide either split_date, train_start/train_end with test_start/test_end, "
+            "or one of train_size/test_size."
+        )
+
+    # Validate skip percentages
+    if skip_start_pct is not None and (skip_start_pct < 0 or skip_start_pct >= 1):
+        raise ValueError("skip_start_pct must be between 0 and 1")
+    if skip_end_pct is not None and (skip_end_pct < 0 or skip_end_pct >= 1):
+        raise ValueError("skip_end_pct must be between 0 and 1")
+    if (
+        skip_start_pct is not None
+        and skip_end_pct is not None
+        and (skip_start_pct + skip_end_pct >= 1)
+    ):
+        raise ValueError("sum of skip_start_pct and skip_end_pct must be less than 1")
+
+    # Get the data
+    df = prepare_price_data(
+        symbol=symbol,
+        drop_null_features=drop_null_features,
+        drop_null_targets=drop_null_targets,
+    )
+
+    # Apply skip percentages if provided
+    if skip_start_pct is not None:
+        start_idx = int(len(df) * skip_start_pct)
+        df = df.iloc[start_idx:]
+    if skip_end_pct is not None:
+        end_idx = int(len(df) * (1 - skip_end_pct))
+        df = df.iloc[:end_idx]
+
+    # Split the data
+    if split_date:
+        split_date = datetime.strptime(split_date, "%Y-%m-%d").date()
+        train_df = df.loc[df.index <= split_date]
+        test_df = df.loc[df.index > split_date]
+    elif train_start and train_end:
+        train_df = df.loc[train_start:train_end]
+        test_df = df.loc[test_start:test_end]
+    else:
+        # Calculate the complementary size if only one is provided
+        if train_size:
+            test_size = 1 - train_size
+            split_idx = int(len(df) * train_size)
+            train_df = df.iloc[:split_idx]
+            test_df = df.iloc[split_idx:]
+        else:  # test_size is provided
+            train_size = 1 - test_size
+            split_idx = int(len(df) * train_size)
+            train_df = df.iloc[:split_idx]
+            test_df = df.iloc[split_idx:]
+
+    if train_df.empty or test_df.empty:
+        raise ValueError("One or both of the resulting DataFrames is empty.")
+
+    return train_df, test_df
