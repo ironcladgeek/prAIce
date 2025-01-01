@@ -43,8 +43,8 @@ app.conf.beat_schedule = {
     },
     "generate-news-summaries": {
         "task": "praice.jobs.tasks.generate_news_summaries_job",
-        "schedule": crontab(minute="*/30"),
-        "kwargs": {"limit": 5, "model": settings.SUMMARIZATION_MODEL},
+        "schedule": crontab(minute="*/20"),
+        "kwargs": {"limit": 20, "model": settings.SUMMARIZATION_MODEL},
     },
     "populate-sentiment-score": {
         "task": "praice.jobs.tasks.populate_sentiment_scores_job",
