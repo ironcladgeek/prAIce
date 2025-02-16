@@ -159,12 +159,12 @@ class FuturePricesAdder:
         The input DataFrame containing historical price data.
     future_periods : list, optional
         A list of integers representing the future periods in days.
-        Defaults to [21, 63] which correspond to ~1 month and 3 months.
+        Defaults to [5, 10, 21] which correspond to ~1-week, 2-week, and 1-month.
     """
 
     def __init__(self, df: pd.DataFrame, future_periods: Optional[list] = None):
         self.df = df.copy()
-        self.future_periods = future_periods or [21, 63]  # ~1m, 3m
+        self.future_periods = future_periods or [5, 10, 21]  # ~1w, 2w, 1m
 
     def add_future_prices(self) -> pd.DataFrame:
         """
