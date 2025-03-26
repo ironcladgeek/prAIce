@@ -9,6 +9,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     wget \
     build-essential \
+    automake \
+    libtool \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # Install TA-Lib
@@ -16,6 +19,7 @@ ENV TALIB_VERSION=0.4.0
 RUN wget https://github.com/reza-zereh/prAIce/releases/download/v0.0.0/ta-lib-${TALIB_VERSION}-src.tar.gz \
     && tar -xzf ta-lib-${TALIB_VERSION}-src.tar.gz \
     && cd ta-lib \
+    && autoreconf -vif \
     && ./configure --prefix=/usr \
     && make \
     && make install \
