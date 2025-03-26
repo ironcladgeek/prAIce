@@ -1,4 +1,21 @@
 services:
+  postgres:
+    image: postgres:16.3
+    restart: unless-stopped
+    container_name: praice_db_cnt
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - praice_network
+
   inference_api:
     build:
       context: ./inference_api
@@ -10,7 +27,8 @@ services:
       - 8001:8001
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/huggingface/hub
-
+    networks:
+      - praice_network
 
   redis:
     image: redis:7
@@ -18,7 +36,8 @@ services:
     container_name: redis_cnt
     ports:
       - 6379:6379
-
+    networks:
+      - praice_network
 
   celery:
     build:
@@ -40,3 +59,14 @@ services:
     depends_on:
       - redis
       - inference_api
+      - postgres
+    networks:
+      - praice_network
+
+networks:
+  praice_network:
+    name: praice_network
+
+volumes:
+  postgres_data:
+    name: praice_postgres_data
