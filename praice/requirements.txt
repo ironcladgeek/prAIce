@@ -13,7 +13,7 @@ pytz==2024.1
 redis==5.0.8
 requests==2.32.3
 rich==13.7.1
-TA-Lib==0.4.32
+TA-Lib==0.6.3
 tqdm==4.66.5
 typer==0.12.3
 yfinance==0.2.41
